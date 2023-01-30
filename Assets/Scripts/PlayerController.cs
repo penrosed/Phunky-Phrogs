@@ -38,30 +38,30 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        UpdateTouchData();                  // Find out if we've dragged along the touchscreen, and by how much
-
-        if (IsGrounded())                   // Find out if we're on the ground. If we are...
-        {                                   // {
-            
-            GetJumpForce();                 //    Update the amount of force we'll apply when we jump, based on touch input.
-            DrawPredictedTrajectory();      //    Based on that force, get our Trajectory manager to draw a predicted trajectory line.
-                                            //
-            if (Input.GetMouseButtonUp(0))  //    If we've released our finger...
-            {                               //    {
-                Jump();                     //       JUMP!
-                _jumpForce = Vector2.zero;  //       Reset our jump force.
-            }                               //    }
-        }                                   // }
-
-        else                                      // Otherwise (if we're in the air)...
-        {                                         // {
-            _distance += _speed * Time.deltaTime; //    Increase our distance travelled.
-        }                                         // }
-
-        if (_rigidbody2D.velocity.y < 0)              // If we're falling...
-        {                                             // {
-            _rigidbody2D.gravityScale = _fallGravity; //    Switch to our falling gravity scale.
-        }                                             // }
+        if (IsGrounded())                                   // Find out if we're on the ground. If we are...
+        {                                                   // {
+            if (Input.GetMouseButton(0))                    //    If the mouse button's down...
+            {                                               //    {
+                UpdateTouchData();                          //       Find out if we've dragged along the touchscreen, and by how much
+                GetJumpForce();                             //       Update the amount of force we'll apply when we jump, based on touch input.
+                DrawPredictedTrajectory();                  //       Based on that force, get our Trajectory manager to draw a predicted trajectory line.
+            }                                               //     }
+                                                            //
+            if (Input.GetMouseButtonUp(0))                  //    If we've released our finger...
+            {                                               //    {
+                Jump();                                     //       JUMP!
+                _jumpForce = Vector2.zero;                  //       Reset our jump force.
+                _trajectoryManager.EnableLine(false);       //       Hide the trajectory line.
+            }                                               //    }
+        }                                                   // }
+        else                                                // Otherwise (if we're in the air)...
+        {                                                   // {
+            _distance += _speed * Time.deltaTime;           //    Increase our distance travelled.
+            if (_rigidbody2D.velocity.y < 0)                //    If we're falling...
+            {                                               //    {
+                _rigidbody2D.gravityScale = _fallGravity;   //       Switch to our falling gravity scale.
+            }                                               //    }
+        }                                                   // }
     }
 
     // Gets the start and end position when we click and drag. Called every frame.
@@ -89,10 +89,6 @@ public class PlayerController : MonoBehaviour
         {
             // Given our jump force, ask the Trajectory manager to draw a predicted arc.
             _trajectoryManager.SimulateHop(this.transform, _jumpForce, _speed, _originalGravity, _fallGravity);
-        }
-        if (Input.GetMouseButtonUp(0)) // When we release our finger...
-        {
-            _trajectoryManager.EnableLine(false); // Hide the trajectory line.
         }
     }
 

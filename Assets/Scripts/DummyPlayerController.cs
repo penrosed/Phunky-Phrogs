@@ -52,10 +52,6 @@ public class DummyPlayerController : MonoBehaviour
         {
             _rigidbody2D.gravityScale = _fallingGravity;
         }
-        if (transform.position.y < -5) // GAMMY SOLUTION FOR LINE RENDERER VISUALS. FIX PLEASE
-        {
-            _rigidbody2D.velocity = new(0f, 0f);
-        }
     }
     
     // Makes the dummy player jump!

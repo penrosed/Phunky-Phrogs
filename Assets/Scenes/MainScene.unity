@@ -471,7 +471,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3d5780fbcb5a8c4db0f3a68ef2e6ce7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _steps: 100
+  _steps: 50
   _dummyPlayer: {fileID: 695644366}
 --- !u!120 &833533752
 LineRenderer:
@@ -524,8 +524,8 @@ LineRenderer:
       serializedVersion: 2
       m_Curve:
       - serializedVersion: 3
-        time: 0.0047454834
-        value: 0.30588531
+        time: 0
+        value: 0.15293884
         inSlope: 0
         outSlope: 0
         tangentMode: 0
@@ -533,8 +533,8 @@ LineRenderer:
         inWeight: 0.33333334
         outWeight: 0.33333334
       - serializedVersion: 3
-        time: 0.99715364
-        value: 0.09411764
+        time: 1
+        value: 0
         inSlope: 0
         outSlope: 0
         tangentMode: 0
