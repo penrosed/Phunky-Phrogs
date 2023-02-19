@@ -29,6 +29,8 @@ public class PlayerController : MonoBehaviour
     // Awake is called before any other calls
     private void Awake()
     {
+        // Makes it no longer chug on mobile. Spent 4 hours figuring this one line out. FML.
+        Application.targetFrameRate = 60;
         _boxCollider = GetComponent<BoxCollider2D>();
         _rigidbody2D = GetComponent<Rigidbody2D>();
         _trajectoryManager = GameObject.FindObjectOfType<TrajectoryManager>();
