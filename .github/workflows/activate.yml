@@ -1,0 +1,28 @@
+name: activate
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+
+  verifyUnityLicense:
+  
+    name: Verify Unity License
+    
+    runs-on: ubuntu-latest
+    
+    steps:
+      
+        # Verify our Unity License is OK.
+      - name: Activate Unity
+        uses: game-ci/unity-activate@v2.0.0
+        with:
+          unity-email: ${{ secrets.UNITY_EMAIL }}
+          unity-password: ${{ secrets.UNITY_PASSWORD }}
+          unity-serial: ${{ secrets.UNITY_SERIAL }}
+          unityVersion: 2021.3.16f1
+        
+        # Return our license to free up a license usage spot.
+      - name: Unity - Return License
+        uses: game-ci/unity-return-license@v2.0.0
+        
