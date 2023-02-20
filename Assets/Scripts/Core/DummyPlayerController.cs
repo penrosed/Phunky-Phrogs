@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using PhunkyPhrogs.Core;
 
 /*
  * Needs to be attached to a GameObject with a Rigidbody2D and
@@ -15,7 +12,7 @@ using PhunkyPhrogs.Core;
  * a predicted trajectory line.
  */
 
-namespace PhunkyPhrogs.TrajectoryLine
+namespace PhunkyPhrogs.Core
 {
     public class DummyPlayerController : MonoBehaviour
     {

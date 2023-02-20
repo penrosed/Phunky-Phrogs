@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -22,7 +20,7 @@ using UnityEngine.SceneManagement;
  * We then get the path the 'dummy' takes and apply it to our line renderer.
  */
 
-namespace PhunkyPhrogs.TrajectoryLine
+namespace PhunkyPhrogs.Core
 {
     public class TrajectoryManager : MonoBehaviour
     {
@@ -30,8 +28,8 @@ namespace PhunkyPhrogs.TrajectoryLine
         [SerializeField] int _steps = 20;
 
         // References to our 'dummy player' and our LineRenderer.
-        [SerializeField] private GameObject _dummyObject;
         private DummyPlayerController _dummyController;
+        private GameObject _dummyObject;
         private LineRenderer _arcRenderer;
 
         // Variables for our simulation scene.
