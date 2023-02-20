@@ -13,24 +13,24 @@ namespace PhunkyPhrogs.Environment
 
         public float distanceBetweenSections;
 
-        private PlayerController pc;
+        private Phrog _phrog;
         private bool canSpawn = true;
 
         // Start is called before the first frame
         void Start()
         {
-            pc = GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<PlayerController>();
+            _phrog = GameObject.FindGameObjectsWithTag("Player")[0].GetComponent<Phrog>();
         }
 
         // Update is called once per frame
         void Update()
         {
-            if (pc._distance % distanceBetweenSections < 0.2 && !pc.grounded && canSpawn)
+            if (_phrog._distance % distanceBetweenSections < 0.2 && !_phrog.grounded && canSpawn)
             {
                 Instantiate(easySections[Random.Range(0, easySections.Length)], transform);
                 canSpawn = false;
             }
-            else if (pc._distance % distanceBetweenSections > 0.5 && !canSpawn)
+            else if (_phrog._distance % distanceBetweenSections > 0.5 && !canSpawn)
             {
                 canSpawn = true;
             }

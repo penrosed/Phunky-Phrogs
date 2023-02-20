@@ -423,9 +423,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 778e226d3b5ece048817147fa9f44035, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _jumpableSurfaces:
-    serializedVersion: 2
-    m_Bits: 64
+  _speed: 0
+  _originalGravity: 0
 --- !u!1 &833533749
 GameObject:
   m_ObjectHideFlags: 0
@@ -586,6 +585,18 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3360893913124335308, guid: bbb6a999feadea54a9d3ebfb1aab73c0, type: 3}
   m_PrefabInstance: {fileID: 1915524776}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &1185977108
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1185977102}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 319369174212fce40bea8b30b85bec53, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1308265435
 GameObject:
   m_ObjectHideFlags: 0
@@ -705,6 +716,10 @@ PrefabInstance:
     - target: {fileID: 3360893913124335308, guid: bbb6a999feadea54a9d3ebfb1aab73c0, type: 3}
       propertyPath: m_Name
       value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 8264034860513165203, guid: bbb6a999feadea54a9d3ebfb1aab73c0, type: 3}
+      propertyPath: m_CollisionDetection
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bbb6a999feadea54a9d3ebfb1aab73c0, type: 3}

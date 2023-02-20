@@ -1,12 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using PhunkyPhrogs.Core;
 
 /*
  * Needs to be attached to a GameObject with a Rigidbody2D and
  * a BoxCollider2D component.
  * ----------------------
- * MADE TO BE USED IN CONJUNCTION WITH THE TRAJECTORY MANAGER CLASS
+ * MADE TO BE USED IN CONJUNCTION WITH THE TRAJECTORY MANAGER & PLAYER CONTROLLER CLASSES
  * ----------------------
  * A barebones version of the player that can be launched by the trajectory
  * manager at lightning-fast speeds, so it can simulate the player jumping.
@@ -18,22 +19,27 @@ namespace PhunkyPhrogs.TrajectoryLine
 {
     public class DummyPlayerController : MonoBehaviour
     {
+        // The values we're stealing from our player, to simulate them.
+        [HideInInspector] public float _speed, _originalGravity;
+
         // We need to know what should stop us when we jump.
-        [SerializeField] private LayerMask _jumpableSurfaces;
+        private LayerMask _jumpableSurfaces;
 
         // References to our physics components, for jumping and ground checking.
         private Rigidbody2D _rigidbody2D;
         private BoxCollider2D _boxCollider2D;
-
-        // The gravity scale we fall with.
-        private float _fallingGravity;
+        private Phrog _phrog;
 
         // Start is called before the first frame update
-        private void Start()
+        private void Awake()
         {
             // Initialise our components.
             _boxCollider2D = GetComponent<BoxCollider2D>();
             _rigidbody2D = GetComponent<Rigidbody2D>();
+            _phrog = FindObjectOfType<Phrog>();
+            _speed = _phrog._speed;
+            _jumpableSurfaces = _phrog._jumpableSurfaces;
+            _originalGravity = _phrog.GetComponent<Rigidbody2D>().gravityScale;
         }
 
         // Check if we're grounded, using a BoxCast.
@@ -44,25 +50,31 @@ namespace PhunkyPhrogs.TrajectoryLine
 
         // If we're in the air, move to the right. If we're falling, apply
         // the falling gravity scale.
-        public void UpdatePosition(float speed)
+        public void UpdatePosition()
         {
-            if (!IsGrounded() && !(transform.position.y < -5))
+            if (!IsGrounded())
             {
-                transform.position += speed * Time.fixedDeltaTime * Vector3.right;
+                transform.position += _speed * Time.fixedDeltaTime * Vector3.right;
             }
             if (_rigidbody2D.velocity.y < 0)
             {
-                _rigidbody2D.gravityScale = _fallingGravity;
+                _rigidbody2D.gravityScale = _phrog._fallGravity;
             }
+        }
+        
+        // Reset our gravity scale & velocity.
+        public void ResetValues()
+        {
+            _rigidbody2D.velocity = Vector3.zero;
+            _rigidbody2D.gravityScale = _originalGravity;
         }
 
         // Makes the dummy player jump!
         // Take our fallingGravity variable from whoever's calling the function,
         // then apply our jumpforce.
-        public void Jump(Vector3 jumpForce, float fallingGravity)
+        public void Jump()
         {
-            _fallingGravity = fallingGravity;
-            _rigidbody2D.AddForce(jumpForce);
+            _rigidbody2D.AddForce(_phrog._jumpForce);
         }
     }
 }
