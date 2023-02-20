@@ -1,12 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 /*
  * Needs to be attached to a GameObject with a LineRenderer component.
  * ----------------------
- * MADE TO BE USED IN CONJUNCTION WITH THE DUMMY PLAYER CONTROLLER CLASS
+ * MADE TO BE USED IN CONJUNCTION WITH THE DUMMY PLAYER CONTROLLER & PLAYER CONTROLLER CLASSES
  * ----------------------
  * Creates a new Scene at runtime, with scene paramaters that set its physics
  * system to NOT MOVE unless we call scene.Simulate(time) .
@@ -22,7 +20,7 @@ using UnityEngine.SceneManagement;
  * We then get the path the 'dummy' takes and apply it to our line renderer.
  */
 
-namespace PhunkyPhrogs.TrajectoryLine
+namespace PhunkyPhrogs.Core
 {
     public class TrajectoryManager : MonoBehaviour
     {
@@ -30,7 +28,8 @@ namespace PhunkyPhrogs.TrajectoryLine
         [SerializeField] int _steps = 20;
 
         // References to our 'dummy player' and our LineRenderer.
-        [SerializeField] private GameObject _dummyPlayer;
+        private DummyPlayerController _dummyController;
+        private GameObject _dummyObject;
         private LineRenderer _arcRenderer;
 
         // Variables for our simulation scene.
@@ -42,10 +41,13 @@ namespace PhunkyPhrogs.TrajectoryLine
             // Get references to our LineRenderer component.
             _arcRenderer = GetComponent<LineRenderer>();
 
-            CreateSceneParameters _param = new CreateSceneParameters(LocalPhysicsMode.Physics2D);   // Define the parameters of a new scene. This lets us have our own separate physics.
-            _simScene = SceneManager.CreateScene("Simulation", _param);                             // Create a new scene and implement the parameters we just created.
-            _physicsSim = _simScene.GetPhysicsScene2D();                                            // Assign the physics of the scene so we can simulate on our own time.
-            _arcRenderer.positionCount = _steps;                                                    // Set the amount of points our drawn line will have.
+            _dummyController = FindObjectOfType<DummyPlayerController>();
+            _dummyObject = _dummyController.gameObject;
+
+            CreateSceneParameters _param = new(LocalPhysicsMode.Physics2D); // Define the parameters of a new scene. This lets us have our own separate physics.
+            _simScene = SceneManager.CreateScene("Simulation", _param);     // Create a new scene and implement the parameters we just created.
+            _physicsSim = _simScene.GetPhysicsScene2D();                    // Assign the physics of the scene so we can simulate on our own time.
+            _arcRenderer.positionCount = _steps;                            // Set the amount of points our drawn line will have.
         }
 
         // 1) Destroys every object in our simulation scene, except the 'dummy'.
@@ -56,14 +58,14 @@ namespace PhunkyPhrogs.TrajectoryLine
             // Destroy every object in the simulation scene, except the 'dummy'.
             foreach (GameObject GO in _simScene.GetRootGameObjects())
             {
-                if (!GO.Equals(_dummyPlayer))
+                if (!GO.Equals(_dummyObject))
                 {
                     Destroy(GO);
                 }
             }
 
             // Copy our dummy player into the simulation scene
-            SceneManager.MoveGameObjectToScene(_dummyPlayer, _simScene);
+            SceneManager.MoveGameObjectToScene(_dummyObject, _simScene);
 
             // Copy every platform into the simulation scene.
             foreach (GameObject section in GameObject.FindGameObjectsWithTag("Section"))
@@ -81,28 +83,25 @@ namespace PhunkyPhrogs.TrajectoryLine
         // Resets the dummy player's position, make the dummy player jump,
         // then iterate our physics scene the number of times found in '_steps'.
         Vector3 _lastForce = Vector3.zero;
-        public void SimulateHop(Transform playerTransform, Vector3 force, float speed, float originalGravity, float fallingGravity)
+        public void SimulateHop(Transform playerTransform, Vector3 force)
         {
             // Reset the dummy player.
-            _dummyPlayer.transform.position = playerTransform.position;
-            _dummyPlayer.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
-            _dummyPlayer.GetComponent<Rigidbody2D>().gravityScale = originalGravity;
-            float tempSpeed = speed;
+            _dummyObject.transform.position = playerTransform.position;
+            _dummyController.ResetValues();
 
             // Only simulate a jump if the force used is different from last time.
             if (_lastForce != force)
             {
                 // Make the dummy player jump.
-                DummyPlayerController dummyController = _dummyPlayer.GetComponent<DummyPlayerController>();
-                dummyController.Jump(force, fallingGravity);
+                _dummyController.Jump();
 
                 // Iterate our physics scene the number of times found in '_steps',
                 // then set the position of our dummy player as a point in our LineRenderer.
                 for (int i = 0; i < _steps; i++)
                 {
                     _physicsSim.Simulate(Time.fixedDeltaTime);
-                    dummyController.UpdatePosition(speed);
-                    _arcRenderer.SetPosition(i, _dummyPlayer.transform.position);
+                    _dummyController.UpdatePosition();
+                    _arcRenderer.SetPosition(i, _dummyObject.transform.position);
                 }
             }
             _lastForce = force;
