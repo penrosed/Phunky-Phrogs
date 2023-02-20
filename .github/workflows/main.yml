@@ -20,9 +20,9 @@ jobs:
 
   # ------------------
   # THE FOLLOWING IS COPIED FROM https://game.ci/docs/github/builder#complete-example
-  buildForAllSupportedPlatforms:
+  buildForAndroid:
     needs: [checkLicense]
-    name: Build for ${{ matrix.targetPlatform }}
+    name: Build for Android
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
@@ -60,11 +60,14 @@ jobs:
           path: build
   # END COPIED SECTION
   # ------------------
-      
+      - name: Copy out file from volume
+        run: |
+          sudo cp /home/runner/work/Phunky-Phrogs/Phunky-Phrogs/build/Android/TestBuild.apk /home/TestBuild.apk
+
       - name: Download our build
         uses: actions/download-artifact@v3.0.2
         with:
           # Artifact name
-          name: Build
+          name: TestBuild.apk
           # Destination path
-          path: build
+          path: home/TestBuild.apk
