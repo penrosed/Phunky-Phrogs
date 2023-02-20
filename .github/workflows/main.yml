@@ -1,7 +1,6 @@
-name: Run Unity Tests
+name: Test & Build
 
-on:
-  workflow_dispatch: {}
+on: [push, pull_request]
 
 env:
   UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -12,37 +11,106 @@ permissions: write-all
 
 jobs:
 
-  runUnityTests:
-  
-    name: Run Unity Tests
-    
+  checkLicense:
+    name: Validate Unity license
     runs-on: ubuntu-latest
-    
+    steps:
+      - name: Unity - Activate
+        uses: game-ci/unity-activate@v2
+
+  runUnityTests:
+    needs: checkLicense
+    name: Run Unity Tests
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        testMode:
+          - EditMode
+          - PlayMode
     steps:
     
-      # Checkout
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v2
-        with:
-          lfs: true
-        
-      # Cache
-      - name: Cache files
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
         uses: actions/cache@v2
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
+      
+      - name: Cache
+      - uses: actions/cache@v2
+        with:
+          path: Library
+          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
+          restore-keys: |
+            Library-
+            
+      - name: Unity - Run tests
+        uses: game-ci/unity-test-runner@v2
+        id: testRunner
+        with:
+          testMode: ${{ matrix.testMode }}
+          checkName: ${{ matrix.testMode }} test results
+          githubToken: ${{ secrets.GITHUB_TOKEN }}
+      
+      - uses: actions/upload-artifact@v2
+        with:
+          name: Test results (${{ matrix.testMode }})
+          path: ${{ steps.runUnityTests.outputs.artifactsPath }}
+
+  buildAndroid:
+    needs: runUnityTests
+    name: Build for Android 📱
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    steps:
+    
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create LFS file list
+        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
+
+      - name: Restore LFS cache
+        uses: actions/cache@v2
+        id: lfs-cache
+        with:
+          path: .git/lfs
+          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
+
+      - name: Git LFS Pull
+        run: |
+          git lfs pull
+          git add .
+          git reset --hard
+      
+      - name: Cache
+      - uses: actions/cache@v2
         with:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-
       
-      # Run some tests.
-      - name: Run Unity Tests
-        uses: game-ci/unity-test-runner@v2
+      - name: Unity - Build
+        uses: game-ci/unity-builder@v2
         with:
-          projectPath: .
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
-        
-      # Return our license to free up a license usage spot.
-      - name: Unity - Return License
-        uses: game-ci/unity-return-license@v2.0.0
-        
+          targetPlatform: Android
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: build-Android
+          path: build/Android
