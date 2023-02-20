@@ -10,13 +10,14 @@ env:
 permissions: write-all
 
 jobs:
-
   checkLicense:
     name: Validate Unity license
     runs-on: ubuntu-latest
     steps:
+      # Check that our Unity License is valid
       - name: Unity - Activate
         uses: game-ci/unity-activate@v2
+
 
   runUnityTests:
     needs: checkLicense
@@ -29,26 +30,24 @@ jobs:
           - EditMode
           - PlayMode
     steps:
-    
+      # Checkout our code
       - name: Checkout code
         uses: actions/checkout@v2
-
+      # ------------------
+      # THE FOLLOWING IS COPIED FROM https://game.ci/docs/github/getting-started#simple-example
       - name: Create LFS file list
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
       - name: Restore LFS cache
         uses: actions/cache@v2
         id: lfs-cache
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
-
       - name: Git LFS Pull
         run: |
           git lfs pull
           git add .
           git reset --hard
-      
       - name: Cache
       - uses: actions/cache@v2
         with:
@@ -56,7 +55,9 @@ jobs:
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-
-            
+      # END COPIED SECTION
+      # ------------------
+      # Test in both EditMode & PlayMode
       - name: Unity - Run tests
         uses: game-ci/unity-test-runner@v2
         id: testRunner
@@ -64,11 +65,12 @@ jobs:
           testMode: ${{ matrix.testMode }}
           checkName: ${{ matrix.testMode }} test results
           githubToken: ${{ secrets.GITHUB_TOKEN }}
-      
+      # Get our results
       - uses: actions/upload-artifact@v2
         with:
           name: Test results (${{ matrix.testMode }})
           path: ${{ steps.runUnityTests.outputs.artifactsPath }}
+
 
   buildAndroid:
     needs: runUnityTests
@@ -77,39 +79,39 @@ jobs:
     strategy:
       fail-fast: false
     steps:
-    
+      # Checkout our code
       - name: Checkout code
         uses: actions/checkout@v2
-
+      # ------------------
+      # THE FOLLOWING IS COPIED FROM https://game.ci/docs/github/getting-started#simple-example
       - name: Create LFS file list
         run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-
       - name: Restore LFS cache
         uses: actions/cache@v2
         id: lfs-cache
         with:
           path: .git/lfs
           key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
-
       - name: Git LFS Pull
         run: |
           git lfs pull
           git add .
           git reset --hard
-      
       - name: Cache
-      - uses: actions/cache@v2
+        uses: actions/cache@v2
         with:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
           restore-keys: |
             Library-
-      
+      # END COPIED SECTION
+      # ------------------
+      # Build our game for Android
       - name: Unity - Build
         uses: game-ci/unity-builder@v2
         with:
           targetPlatform: Android
-
+      # Put our .apk in /build/Android
       - uses: actions/upload-artifact@v2
         with:
           name: build-Android
