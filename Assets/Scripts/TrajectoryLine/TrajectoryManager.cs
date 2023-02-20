@@ -30,7 +30,7 @@ namespace PhunkyPhrogs.TrajectoryLine
         [SerializeField] int _steps = 20;
 
         // References to our 'dummy player' and our LineRenderer.
-        [SerializeField] private GameObject _dummyPlayer;
+        [SerializeField] private GameObject _dummyObject;
         private DummyPlayerController _dummyController;
         private LineRenderer _arcRenderer;
 
@@ -43,8 +43,8 @@ namespace PhunkyPhrogs.TrajectoryLine
             // Get references to our LineRenderer component.
             _arcRenderer = GetComponent<LineRenderer>();
 
-            _dummyPlayer = FindObjectOfType<DummyPlayerController>().gameObject;
-            _dummyController = _dummyPlayer.GetComponent<DummyPlayerController>();
+            _dummyController = FindObjectOfType<DummyPlayerController>();
+            _dummyObject = _dummyController.gameObject;
 
             CreateSceneParameters _param = new(LocalPhysicsMode.Physics2D); // Define the parameters of a new scene. This lets us have our own separate physics.
             _simScene = SceneManager.CreateScene("Simulation", _param);     // Create a new scene and implement the parameters we just created.
@@ -60,14 +60,14 @@ namespace PhunkyPhrogs.TrajectoryLine
             // Destroy every object in the simulation scene, except the 'dummy'.
             foreach (GameObject GO in _simScene.GetRootGameObjects())
             {
-                if (!GO.Equals(_dummyPlayer))
+                if (!GO.Equals(_dummyObject))
                 {
                     Destroy(GO);
                 }
             }
 
             // Copy our dummy player into the simulation scene
-            SceneManager.MoveGameObjectToScene(_dummyPlayer, _simScene);
+            SceneManager.MoveGameObjectToScene(_dummyObject, _simScene);
 
             // Copy every platform into the simulation scene.
             foreach (GameObject section in GameObject.FindGameObjectsWithTag("Section"))
@@ -88,7 +88,7 @@ namespace PhunkyPhrogs.TrajectoryLine
         public void SimulateHop(Transform playerTransform, Vector3 force)
         {
             // Reset the dummy player.
-            _dummyPlayer.transform.position = playerTransform.position;
+            _dummyObject.transform.position = playerTransform.position;
             _dummyController.ResetValues();
 
             // Only simulate a jump if the force used is different from last time.
@@ -103,7 +103,7 @@ namespace PhunkyPhrogs.TrajectoryLine
                 {
                     _physicsSim.Simulate(Time.fixedDeltaTime);
                     _dummyController.UpdatePosition();
-                    _arcRenderer.SetPosition(i, _dummyPlayer.transform.position);
+                    _arcRenderer.SetPosition(i, _dummyObject.transform.position);
                 }
             }
             _lastForce = force;
