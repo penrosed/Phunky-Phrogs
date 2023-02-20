@@ -20,7 +20,7 @@ jobs:
 
 
   runUnityTests:
-    needs: checkLicense
+    needs: [checkLicense]
     name: Run Unity Tests
     runs-on: ubuntu-latest
     strategy:
@@ -72,48 +72,41 @@ jobs:
           name: Test results
           path: artifacts
 
-
-  buildAndroid:
-    needs: runUnityTests
-    name: Build for Android 📱
+  # ------------------
+  # THE FOLLOWING IS COPIED FROM https://game.ci/docs/github/builder#complete-example
+  buildForAllSupportedPlatforms:
+    needs: [runUnityTests]
+    name: Build for ${{ matrix.targetPlatform }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      matrix:
+        targetPlatform:
+          - Android # Build an Android .apk standalone app.
     steps:
       # Checkout our code
       - name: Checkout code
         uses: actions/checkout@v2
-      # ------------------
-      # THE FOLLOWING IS COPIED FROM https://game.ci/docs/github/getting-started#simple-example
-      - name: Create LFS file list
-        run: git lfs ls-files -l | cut -d' ' -f1 | sort > .lfs-assets-id
-      - name: Restore LFS cache
-        uses: actions/cache@v2
-        id: lfs-cache
         with:
-          path: .git/lfs
-          key: ${{ runner.os }}-lfs-${{ hashFiles('.lfs-assets-id') }}
-      - name: Git LFS Pull
-        run: |
-          git lfs pull
-          git add .
-          git reset --hard
+          fetch-depth: 0
+          lfs: true
+      # Cache
       - name: Cache
         uses: actions/cache@v2
         with:
           path: Library
-          key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
-          restore-keys: |
-            Library-
-      # END COPIED SECTION
-      # ------------------
-      # Build our game for Android
-      - name: Unity - Build
+          key: Library-${{ matrix.targetPlatform }}
+          restore-keys: Library-
+      # Build our game
+      - name: Unity - Run tests
         uses: game-ci/unity-builder@v2
         with:
-          targetPlatform: Android
-      # Put our .apk in /build/Android
+          targetPlatform: ${{ matrix.targetPlatform }}
+      # Save our build
       - uses: actions/upload-artifact@v2
         with:
-          name: build-Android
-          path: build/Android
+          name: Build-${{ matrix.targetPlatform }}
+          path: build/${{ matrix.targetPlatform }}
+  # END COPIED SECTION
+  # ------------------
+      
