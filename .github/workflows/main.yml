@@ -11,8 +11,11 @@ env:
 jobs:
 
   runUnityTests:
+  
     name: Run Unity Tests
+    
     runs-on: ubuntu-latest
+    
     steps:
     
       # Checkout
@@ -23,7 +26,7 @@ jobs:
         
       # Cache
       - name: Cache files
-      - uses: actions/cache@v2
+        uses: actions/cache@v2
         with:
           path: Library
           key: Library-${{ hashFiles('Assets/**', 'Packages/**', 'ProjectSettings/**') }}
@@ -31,7 +34,8 @@ jobs:
             Library-
       
       # Run some tests.
-      - uses: game-ci/unity-test-runner@v2
+      - name: Run Unity Tests
+        uses: game-ci/unity-test-runner@v2
         with:
           projectPath: .
           githubToken: ${{ secrets.GITHUB_TOKEN }}
