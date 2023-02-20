@@ -8,6 +8,8 @@ env:
   UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
   UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
 
+permissions: write-all
+
 jobs:
 
   runUnityTests:
