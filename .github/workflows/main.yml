@@ -38,7 +38,7 @@ jobs:
         uses: game-ci/unity-test-runner@v2
         with:
           projectPath: .
-          githubToken: ${{ secrets.GITHUB_TOKEN }}
+          githubToken: ${{ secrets.PAT }}
         
       # Return our license to free up a license usage spot.
       - name: Unity - Return License
