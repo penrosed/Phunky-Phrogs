@@ -16,10 +16,11 @@ jobs:
         # Verify our Unity License is OK.
       - name: Activate Unity
         uses: game-ci/unity-activate@v2.0.0
+        env:
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+          UNITY_SERIAL: ${{ secrets.UNITY_SERIAL }}
         with:
-          unity-email: ${{ secrets.UNITY_EMAIL }}
-          unity-password: ${{ secrets.UNITY_PASSWORD }}
-          unity-serial: ${{ secrets.UNITY_SERIAL }}
           unityVersion: 2021.3.16f1
         
         # Return our license to free up a license usage spot.
