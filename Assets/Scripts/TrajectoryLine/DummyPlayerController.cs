@@ -48,7 +48,7 @@ namespace PhunkyPhrogs.TrajectoryLine
         {
             if (!IsGrounded() && !(transform.position.y < -5))
             {
-                transform.position += Vector3.right * speed * Time.fixedDeltaTime;
+                transform.position += speed * Time.fixedDeltaTime * Vector3.right;
             }
             if (_rigidbody2D.velocity.y < 0)
             {

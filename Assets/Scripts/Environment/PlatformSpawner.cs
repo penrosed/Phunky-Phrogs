@@ -25,7 +25,7 @@ namespace PhunkyPhrogs.Environment
         // Update is called once per frame
         void Update()
         {
-            if (pc._distance % distanceBetweenSections < 0.2 && !pc.IsGrounded() && canSpawn)
+            if (pc._distance % distanceBetweenSections < 0.2 && !pc.grounded && canSpawn)
             {
                 Instantiate(easySections[Random.Range(0, easySections.Length)], transform);
                 canSpawn = false;

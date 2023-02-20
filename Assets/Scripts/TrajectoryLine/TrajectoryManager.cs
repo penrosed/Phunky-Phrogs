@@ -42,10 +42,10 @@ namespace PhunkyPhrogs.TrajectoryLine
             // Get references to our LineRenderer component.
             _arcRenderer = GetComponent<LineRenderer>();
 
-            CreateSceneParameters _param = new CreateSceneParameters(LocalPhysicsMode.Physics2D);   // Define the parameters of a new scene. This lets us have our own separate physics.
-            _simScene = SceneManager.CreateScene("Simulation", _param);                             // Create a new scene and implement the parameters we just created.
-            _physicsSim = _simScene.GetPhysicsScene2D();                                            // Assign the physics of the scene so we can simulate on our own time.
-            _arcRenderer.positionCount = _steps;                                                    // Set the amount of points our drawn line will have.
+            CreateSceneParameters _param = new(LocalPhysicsMode.Physics2D); // Define the parameters of a new scene. This lets us have our own separate physics.
+            _simScene = SceneManager.CreateScene("Simulation", _param);     // Create a new scene and implement the parameters we just created.
+            _physicsSim = _simScene.GetPhysicsScene2D();                    // Assign the physics of the scene so we can simulate on our own time.
+            _arcRenderer.positionCount = _steps;                            // Set the amount of points our drawn line will have.
         }
 
         // 1) Destroys every object in our simulation scene, except the 'dummy'.
@@ -87,7 +87,6 @@ namespace PhunkyPhrogs.TrajectoryLine
             _dummyPlayer.transform.position = playerTransform.position;
             _dummyPlayer.GetComponent<Rigidbody2D>().velocity = Vector3.zero;
             _dummyPlayer.GetComponent<Rigidbody2D>().gravityScale = originalGravity;
-            float tempSpeed = speed;
 
             // Only simulate a jump if the force used is different from last time.
             if (_lastForce != force)

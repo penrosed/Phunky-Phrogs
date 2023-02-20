@@ -18,9 +18,9 @@ namespace PhunkyPhrogs.Environment
         // FixedUpdate is called once per frame, for physics interactions
         private void FixedUpdate()
         {
-            if (!_pc.IsGrounded()) // If the player's jumping, move.
+            if (!_pc.grounded) // If the player's jumping, move.
             {
-                transform.position += Vector3.left * _pc._speed * Time.fixedDeltaTime;
+                transform.position += _pc._speed * Time.fixedDeltaTime * Vector3.left;
 
                 DestroyCheck(); // Check if we're off the screen.
             }
