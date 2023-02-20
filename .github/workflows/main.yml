@@ -67,9 +67,10 @@ jobs:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
       # Get our results
       - uses: actions/upload-artifact@v2
+        if: always()
         with:
-          name: Test results (${{ matrix.testMode }})
-          path: ${{ steps.runUnityTests.outputs.artifactsPath }}
+          name: Test results
+          path: artifacts
 
 
   buildAndroid:
