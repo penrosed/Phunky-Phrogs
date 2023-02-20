@@ -80,9 +80,6 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
-      matrix:
-        targetPlatform:
-          - Android # Build an Android .apk standalone app.
     steps:
       # Checkout our code
       - name: Checkout code
@@ -91,22 +88,30 @@ jobs:
           fetch-depth: 0
           lfs: true
       # Cache
-      - name: Cache
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
-          path: Library
-          key: Library-${{ matrix.targetPlatform }}
-          restore-keys: Library-
+          path: ./Library
+          key: Library-PhunkyPhrogs-Android
+          restore-keys: |
+            Library-PhunkyPhrogs-
+            Library-
       # Build our game
-      - name: Unity - Run tests
-        uses: game-ci/unity-builder@v2
+      - name: Unity - Builder
+        uses: game-ci/unity-builder@v2.2.0
         with:
-          targetPlatform: ${{ matrix.targetPlatform }}
+          # Platform that the build should target.
+          targetPlatform: Android
+          # Relative path to the project to be built.
+          projectPath: .
+          # Name of the build. Should not include a file extension.
+          buildName: TestBuild
+          # Path where the builds should be stored.
+          buildsPath: ./build
       # Save our build
       - uses: actions/upload-artifact@v2
         with:
-          name: Build-${{ matrix.targetPlatform }}
-          path: build/${{ matrix.targetPlatform }}
+          name: Build
+          path: build
   # END COPIED SECTION
   # ------------------
       
