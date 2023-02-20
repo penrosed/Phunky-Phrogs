@@ -2,7 +2,6 @@ name: Run Unity Tests
 
 on:
   workflow_dispatch: {}
-  
 
 env:
   UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -12,11 +11,8 @@ env:
 jobs:
 
   runUnityTests:
-  
     name: Run Unity Tests
-    
     runs-on: ubuntu-latest
-    
     steps:
     
       # Checkout
@@ -26,6 +22,7 @@ jobs:
           lfs: true
         
       # Cache
+      - name: Cache files
       - uses: actions/cache@v2
         with:
           path: Library
