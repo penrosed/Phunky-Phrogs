@@ -1,6 +1,10 @@
 name: Test & Build
 
-on: [push, pull_request]
+on:
+  push:
+    branches: main
+  pull_request:
+    branches: main
 
 env:
   UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
@@ -68,6 +72,6 @@ jobs:
         uses: actions/download-artifact@v3.0.2
         with:
           # Artifact name
-          name: TestBuild.apk
+          name: Build
           # Destination path
           path: home/TestBuild.apk
