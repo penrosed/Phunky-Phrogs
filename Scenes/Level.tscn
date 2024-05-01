@@ -1,0 +1,16 @@
+[gd_scene load_steps=2 format=3 uid="uid://cks255b6axhl0"]
+
+[ext_resource type="PackedScene" uid="uid://bf3ui8olsptkn" path="res://Scenes/Player.tscn" id="1_q4qfd"]
+
+[node name="Level" type="Node3D"]
+
+[node name="Player" parent="." instance=ExtResource("1_q4qfd")]
+
+[node name="Camera3D" type="Camera3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1.58412)
+projection = 1
+size = 2.0
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.5, 0.866025, 0, -0.866025, 0.5, 0, 0, 0)
+directional_shadow_mode = 0
