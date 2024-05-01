@@ -147,7 +147,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _speed: 3
+  _bounceSpeed: 4.5
   _fallGravity: 4
+  _thumpGravity: 12
   _maxJumpForce: 600
   _swipeCurve:
     serializedVersion: 2
@@ -171,7 +173,7 @@ MonoBehaviour:
       inWeight: 0.33333334
       outWeight: 0.33333334
     - serializedVersion: 3
-      time: 0.091718316
+      time: 0.09065783
       value: 0.34856427
       inSlope: 0.024271749
       outSlope: 2.1854396
@@ -193,6 +195,7 @@ MonoBehaviour:
     m_RotationOrder: 4
   _originalGravity: 0
   _distance: 0
+  grounded: 0
   _jumpableSurfaces:
     serializedVersion: 2
     m_Bits: 64
