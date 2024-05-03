@@ -1,6 +1,9 @@
-[gd_scene load_steps=4 format=3 uid="uid://bf3ui8olsptkn"]
+[gd_scene load_steps=7 format=3 uid="uid://bf3ui8olsptkn"]
 
 [ext_resource type="Script" path="res://Core/Scripts/Player.gd" id="1_e73tf"]
+[ext_resource type="Script" path="res://Core/Scripts/State Machine/StateMachine.gd" id="2_a528i"]
+[ext_resource type="Script" path="res://Core/Scripts/Player State Logic/Idle.gd" id="3_ndvhe"]
+[ext_resource type="Script" path="res://Core/Scripts/Player State Logic/Air.gd" id="4_tbkou"]
 
 [sub_resource type="SphereShape3D" id="SphereShape3D_00qxh"]
 
@@ -14,3 +17,13 @@ shape = SubResource("SphereShape3D_00qxh")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="."]
 mesh = SubResource("SphereMesh_u7wu1")
+
+[node name="StateMachine" type="Node" parent="."]
+script = ExtResource("2_a528i")
+initial_state = NodePath("Air")
+
+[node name="Idle" type="Node" parent="StateMachine"]
+script = ExtResource("3_ndvhe")
+
+[node name="Air" type="Node" parent="StateMachine"]
+script = ExtResource("4_tbkou")

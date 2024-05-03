@@ -15,4 +15,4 @@ func _process(delta):
 	# When the player moves, it actually stays still, and all platforms move
 	# instead. The speed is gotten from the PlayerVariables, and applied here.
 	if playerVarsSingleton.isMoving:
-		position.x += playerVarsSingleton.currentSpeed.x * delta
+		position.x -= playerVarsSingleton.currentSpeed.x * delta
