@@ -1,5 +1,9 @@
 extends Node
 
+
+# TODO: Switch from polling to signals. (i.e., instead of updating each frame,
+#       send a signal when the variable changes.
+
 ## Is the player currently moving?
 var isMoving: bool = false
 
