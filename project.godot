@@ -15,6 +15,10 @@ run/main_scene="res://Mobile/Scenes/MobileBuild.tscn"
 config/features=PackedStringArray("4.2", "Mobile")
 config/icon="res://icon.svg"
 
+[autoload]
+
+PlayerVariables="*res://Core/Scripts/Autoload/PlayerVariables.gd"
+
 [display]
 
 window/size/viewport_width=540
