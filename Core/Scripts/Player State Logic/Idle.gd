@@ -4,7 +4,7 @@ extends PlayerState
 var tapPos: Vector2
 var releasePos: Vector2
 
-const JUMP_VELOCITY: float = 4.5
+const JUMP_VELOCITY: float = 5
 
 
 # Recieves any unhandled input.

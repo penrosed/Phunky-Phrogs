@@ -11,8 +11,8 @@ var gravity: float = ProjectSettings.get_setting("physics/3d/default_gravity")
 # Called when the state is entered
 func enter(_msg := {}) -> void:
 	if _msg.has("jump_vector"):
-		#print("Vector: ", _msg["jump_vector"])
-		owner.velocity = _msg["jump_vector"]
+		player.velocity = _msg["jump_vector"]
+		player.move_and_slide()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
